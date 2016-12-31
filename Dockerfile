@@ -6,5 +6,6 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 ADD init ./
+ADD clean-rule ./
 
 ENTRYPOINT ./init
