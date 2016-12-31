@@ -4,15 +4,12 @@ search_dir=/home/whiteip/custom
 
 # add a new chain BYPASS
 ADD-CHAIN() {
-	iptables -t nat -D POSTROUTING -o $WAN -j MASQUERADE
-	iptables -t nat -D PREROUTING -p tcp -i $LAN -j BYPASS
-
+	./clean-rule $WAN $LAN
+	
 	## use DNAT
 	iptables -t nat -I POSTROUTING -o $WAN -j MASQUERADE
 
-	## refresh chain BYPASS
-	iptables -t nat -F BYPASS
-	iptables -t nat -X BYPASS
+	## create chain BYPASS
 	iptables -t nat -N BYPASS
 	iptables -t nat -I PREROUTING -p tcp -i $LAN -j BYPASS
 }
