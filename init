@@ -1,0 +1,87 @@
+#!/bin/bash
+chinaip_file=/home/whiteip/chinaips
+search_dir=/home/whiteip/custom
+
+# add a new chain BYPASS
+ADD-CHAIN() {
+	iptables -t nat -D POSTROUTING -o $WAN -j MASQUERADE
+	iptables -t nat -D PREROUTING -p tcp -i $LAN -j BYPASS
+
+	## use DNAT
+	iptables -t nat -I POSTROUTING -o $WAN -j MASQUERADE
+
+	## refresh chain BYPASS
+	iptables -t nat -F BYPASS
+	iptables -t nat -X BYPASS
+	iptables -t nat -N BYPASS
+	iptables -t nat -I PREROUTING -p tcp -i $LAN -j BYPASS
+}
+
+# create ipset with ips
+CREATE-IPSET() {
+	echo "get $1 list start ..."
+	ipset create -exist $1 hash:net
+	ipset flush $1
+
+	while read ip; do
+	  ipset -q add $1 $ip 
+	done < $2
+
+	echo "get $1 list ... done"
+}
+
+# set whitelist ips in '$search_dir/files'
+SET-WHITELIST() {
+	whiteips=$1
+	file=$2
+
+	if [ -f $file ] && [ -s $file ]; then
+		CREATE-IPSET $whiteips $file
+    	iptables -t nat -A BYPASS -p tcp --match set --match-set $whiteips dst -j RETURN
+    fi
+}
+
+# redirect ips in '$search_dir/port/files'
+APPEND-REDIRECT-RULE() {
+	port=$1
+	dir=$2
+
+	if [ -d $dir ] && [[ $port =~ ^-?[0-9]+$ ]]; then
+		for file in "$dir"/*
+		do
+			if [ -f $file ] && [ -s $file ]; then
+				redirect_ips=${file#*$port/}
+				CREATE-IPSET $redirect_ips $file
+				iptables -t nat -A BYPASS -p tcp --match set --match-set $redirect_ips dst -j REDIRECT --to $port
+			fi
+		done
+    fi
+}
+
+# append custom rules to chain BYPASS
+APPEND-CUSTOM-RULE() {
+	CREATE-IPSET chinaips $chinaip_file
+	iptables -t nat -A BYPASS -p tcp --match set --match-set chinaips dst -j RETURN
+
+	for entry in "$search_dir"/*
+	do
+		filename=${entry#*$search_dir/}
+		SET-WHITELIST $filename $entry
+		APPEND-REDIRECT-RULE $filename $entry
+	done
+}
+
+# append all rules to chain BYPASS
+APPEND-RULE() {
+	iptables -t nat -A BYPASS -p tcp -d 192.168.0.0/16 -j RETURN
+	APPEND-CUSTOM-RULE
+	iptables -t nat -A BYPASS -p tcp -j REDIRECT --to $DEFAULT_PORT
+}
+
+INIT() {
+	ADD-CHAIN
+	APPEND-RULE
+	iptables -t nat -L -vn
+}
+
+INIT && bash
