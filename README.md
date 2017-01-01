@@ -1,5 +1,5 @@
 # bypass
-使用 iptables 制定在x86上的双网卡的包转发规则 (请确保打开了系统的 ipv4_forward ) .
+使用 iptables 制定在x86上的双网卡之间包的转发规则 (请确保打开了系统的 ipv4_forward ) .
 
 ## 规则介绍
 将网卡 eth0 和 eth1 分别作为 WAN口 和 LAN口, 通过筛选包的目标地址来控制所有从 LAN口 输入的包.
