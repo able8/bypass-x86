@@ -55,11 +55,16 @@ APPEND-REDIRECT-RULE() {
     fi
 }
 
+# append chinaip rules to chain BYPASS
+APPEND-CHINAIP-RULE() {
+	if [ -f $chinaip_file ] && [ -s $chinaip_file ]; then
+		CREATE-IPSET chinaips $chinaip_file
+		iptables -t nat -A BYPASS -p tcp --match set --match-set chinaips dst -j RETURN
+	fi
+}
+
 # append custom rules to chain BYPASS
 APPEND-CUSTOM-RULE() {
-	CREATE-IPSET chinaips $chinaip_file
-	iptables -t nat -A BYPASS -p tcp --match set --match-set chinaips dst -j RETURN
-
 	for entry in "$search_dir"/*
 	do
 		filename=${entry#*$search_dir/}
@@ -77,6 +82,7 @@ APPEND-RULE() {
 
 INIT() {
 	ADD-CHAIN
+	APPEND-CHINAIP-RULE
 	APPEND-RULE
 	iptables -t nat -L -vn
 }
