@@ -1,13 +1,9 @@
 #!/bin/bash
 if [ "$1" = "" ]; then
-	echo "Clean needs two params, WAN interface name and LAN interface name ."
-elif [ "$2" = "" ]; then
-	echo "Clean also needs LAN interface name ."
+	echo "Clean needs WAN interface name."
 else
 	echo "clean start ..."
-	WAN=$1
-	LAN=$2
-#	iptables -t nat -D POSTROUTING -o $WAN -j MASQUERADE
+	LAN=$1
 	iptables -t nat -D PREROUTING -p tcp -i $LAN -j BYPASS
 	iptables -t nat -F BYPASS
 	iptables -t nat -X BYPASS
