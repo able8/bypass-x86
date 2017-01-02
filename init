@@ -7,7 +7,7 @@ ADD-CHAIN() {
 	./clean-rule $WAN $LAN
 	
 	## use DNAT
-	iptables -t nat -I POSTROUTING -o $WAN -j MASQUERADE
+	#iptables -t nat -I POSTROUTING -o $WAN -j MASQUERADE
 
 	## create chain BYPASS
 	iptables -t nat -N BYPASS
