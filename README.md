@@ -25,5 +25,5 @@ docker run -itd --privileged --restart=always --cap-add=NET_ADMIN --net=host -v 
 ```
 * 清空规则
 ```
-docker exec -it router_bypass ./clean-rule eth0 eth1
+docker exec -it router_bypass ./clean-rule eth1
 ```
