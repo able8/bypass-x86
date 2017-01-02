@@ -21,7 +21,7 @@
 ## 用法
 * 生成规则
 ```
-docker run -itd --privileged --restart=always --cap-add=NET_ADMIN --net=host -v /dorry_data/bypass/:/home/whiteip/custom -e WAN=eth0 -e LAN=eth1 -e DEFAULT_PORT=1080 --name router_bypass dorrypizza/bypass
+docker run -itd --privileged --restart=always --cap-add=NET_ADMIN --net=host -v /dorry_data/bypass/:/home/whiteip/custom -e LAN=eth1 -e DEFAULT_PORT=1080 --name router_bypass dorrypizza/bypass
 ```
 * 清空规则
 ```
