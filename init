@@ -4,7 +4,7 @@ search_dir=/home/whiteip/custom
 
 # add a new chain BYPASS
 ADD-CHAIN() {
-	./clean-rule $WAN $LAN
+	./clean-rule $LAN
 	
 	## use DNAT
 	#iptables -t nat -I POSTROUTING -o $WAN -j MASQUERADE
