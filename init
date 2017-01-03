@@ -78,7 +78,7 @@ APPEND-CUSTOM-RULE-WHITELIST() {
 	do
 		file_name=${file#*$customip_dir/}
 		port=${file_name#*--}
-		[[ $port =~ ^-?[0-9]+$ ]] || ( ipset_name=file_name && iptables -t nat -A BYPASS -p tcp --match set --match-set $ipset_name dst -j RETURN )
+		[[ $port =~ ^-?[0-9]+$ ]] || ( ipset_name=$file_name && iptables -t nat -A BYPASS -p tcp --match set --match-set $ipset_name dst -j RETURN )
 	done
 }
 
