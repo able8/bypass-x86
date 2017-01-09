@@ -8,12 +8,12 @@ It checks destination address of packets input from `eth1`, and pass them to dif
 * redirect to port:
     redirect packets whose destination address in files name like `myips--1090` in directory `/dorry_data/bypass/` to local port 1090 etc.
 * redirect to default port:
-	redirect packets whose destination address not in above, to default port `1080`.
+	redirect packets whose destination address not in above, to default port `1080` and `1090` equally.
 
 ## Usage
 * generate rule
 ```
-docker run -itd --privileged --restart=always --cap-add=NET_ADMIN --net=host -v /dorry_data/bypass/:/home/whiteip/custom -e LAN=eth1 -e DEFAULT_PORT=1080 --name router_bypass dorrypizza/bypass
+docker run -itd --privileged --restart=always --cap-add=NET_ADMIN --net=host -v /dorry_data/bypass/:/home/whiteip/custom -e LAN=eth1 -e PORT_1=1080 -e PORT_2=1090 --name router_bypass dorrypizza/bypass
 ```
 
 * clean rule
