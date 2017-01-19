@@ -69,8 +69,9 @@ APPEND-DEFAULT-RULE-WHITELIST() {
 
 # redirect all other packets to `DEFAULT_PORT`, set by docker environment variable
 APPEND-DEFAULT-RULE-REDIRECT() {
-        iptables -t nat -A BYPASS -p tcp -m statistic --mode random --probability .5 -j REDIRECT --to $PORT_1
-        iptables -t nat -A BYPASS -p tcp -m statistic --mode random --probability 1 -j REDIRECT --to $PORT_2
+        iptables -t nat -A BYPASS -p tcp -m statistic --mode random --probability .3 -j REDIRECT --to $PORT_1
+        iptables -t nat -A BYPASS -p tcp -m statistic --mode random --probability .5 -j REDIRECT --to $PORT_2
+        iptables -t nat -A BYPASS -p tcp -m statistic --mode random --probability 1 -j REDIRECT --to $PORT_3
 }
 
 # add custom white list in '$customip_dir/myips'
